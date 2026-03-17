@@ -3,7 +3,6 @@ terraform.tfstate
 terraform.tfstate.*
 .terraform/
 
-
 # Python virtual environments
 venv/
 .venv/
