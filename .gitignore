@@ -8,7 +8,7 @@ venv/
 .venv/
 plugins/
 plugings/
-config/
+#
 logs/
 __pycache__/
 *.pyc
