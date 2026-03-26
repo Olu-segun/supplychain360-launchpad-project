@@ -101,7 +101,7 @@ def write_to_s3(df):
         return None
 
     ingestion_time = datetime.now()
-    file_name = f"retail_store_locations_{ingestion_time.strftime('%Y%m%d_%H%M%S')}.parquet"
+    file_name = f"retail_store_locations_{ingestion_time.strftime('%Y%m%d')}.parquet"
     s3_key = f"{TARGET_PREFIX}{file_name}"
 
     buffer = BytesIO()
