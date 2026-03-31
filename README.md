@@ -40,8 +40,17 @@ Operational data is scattered across multiple systems:
 | Store Locations     | Google Sheets | Static dataset (Rarely change)|
 | Suppliers           | CSV (S3)      | Static dataset (Rarely change)|
 | Warehouses          | CSV (S3)      | Static dataset (Rarely change)|
-| Inventory Snapshots | CSV (S3)      | Daily                         |
-| Shipment Logs       | JSON (S3)     | Daily                         |
-| Sales Transactions  | PostgreSQL    | Daily                         |
+| Inventory Snapshots | CSV (S3)      | Generate Daily                |
+| Shipment Logs       | JSON (S3)     | Generate Daily                |
+| Sales Transactions  | PostgreSQL    | Generate Daily                |
+----
+## 🔄 Pipeline Workflow
+### Airflow orchestrates:
+Extract data from all sources
+Load raw data into S3 (Parquet format)
+Ingest data into Snowflake (RAW schema)
+Transform data using dbt
+Run data quality checks
+Build analytical models
 
 
