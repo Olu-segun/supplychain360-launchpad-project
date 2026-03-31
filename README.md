@@ -11,7 +11,6 @@ This project builds a Unified Supply Chain Data Platform to centralize operation
 - 🤝 **Supplier performance monitoring**
 ---
 ## 🧠 Business Problem
-### The company struggles with:
 SupplyChain360 currently struggles with:
 - 📉 Frequent stockouts of high-demand products
 - 📦 Overstocking of low-demand inventory
