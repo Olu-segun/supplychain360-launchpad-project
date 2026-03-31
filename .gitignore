@@ -18,3 +18,4 @@ __pycache__/
 *.pyd
 
 dbt_project.yml
+target/
