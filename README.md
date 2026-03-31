@@ -45,12 +45,23 @@ Operational data is scattered across multiple systems:
 | Sales Transactions  | PostgreSQL    | Generate Daily                |
 ----
 ## 🔄 Pipeline Workflow
-### Airflow orchestrates:
+Airflow orchestrates:
 - Extract data from all sources
 - Load raw data into S3 (Parquet format)
 - Ingest data into Snowflake (RAW schema)
 - Transform data using dbt
 - Run data quality checks
 - Build analytical models
+
+## 🧱 Data Modeling
+#### Layers:
+- RAW → Unprocessed data
+- STAGING → Cleaned & standardized
+- MARTS → Business-ready models
+#### Example Models:
+- fact_sales
+- dim_products
+- dim_suppliers
+- fact_shipments
 
 
