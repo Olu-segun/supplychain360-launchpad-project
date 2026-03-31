@@ -109,7 +109,7 @@ dbt build
 - Demand trends by region
 ----
 ## 📊 Architecture Diagram
-(Add image in /docs/architecture.png)
+
 ----
 ## 🎯 Outcome
 This platform enables:
