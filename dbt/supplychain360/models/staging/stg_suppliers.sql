@@ -1,0 +1,7 @@
+
+SELECT
+    DATA:"supplier_id"::STRING     AS SUPPLIER_ID,
+    DATA:"supplier_name"::STRING   AS SUPPLIER_NAME,
+    DATA:"category"::STRING        AS CATEGORY,
+    DATA:"country"::STRING         AS COUNTRY
+FROM SUPPLYCHAIN360_DB.RAW.SUPPLIERS

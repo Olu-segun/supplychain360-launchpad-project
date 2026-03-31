@@ -1,0 +1,6 @@
+
+SELECT
+    DATA:"warehouse_id"::STRING   AS WAREHOUSE_ID,
+    DATA:"city"::STRING           AS CITY,
+    DATA:"state"::STRING          AS STATE
+FROM SUPPLYCHAIN360_DB.RAW.WAREHOUSES
