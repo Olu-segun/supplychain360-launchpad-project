@@ -81,7 +81,7 @@ The entire pipeline is containerized using Docker.
 `docker build -t supplychain360 .`
 
 ## ⚙️ CI/CD Pipeline
-- GitHub Actions handles:
+GitHub Actions handles:
 - Code linting
 - Formatting checks
 - Docker image build
