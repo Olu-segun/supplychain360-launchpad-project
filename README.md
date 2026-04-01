@@ -96,21 +96,21 @@ The entire pipeline is containerized using Docker.
 ## 🚀 How to Run
 1. Clone repo
 
-`git clone https://github.com/Olu-segun/supplyChain360-launchpad-project`
+    `git clone https://github.com/Olu-segun/supplyChain360-launchpad-project`
 
 2. Set environment variables
 
- `cp .env.example .env`
+    `cp .env.example .env`
 
 3. Start Airflow
 
- `docker-compose up`
- 
+    `docker-compose up`
+
 4. Run dbt
 
- `cd dbt`
+    `cd dbt`
 
- `dbt build`
+    `dbt build`
 
 ## 📈 Business Insights 
 - Products causing most stockouts
