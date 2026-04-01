@@ -32,7 +32,7 @@ Operational data is scattered across multiple systems:
 | Infrastructure   | Terraform      |
 | Containerization | Docker         |
 | CI/CD            | GitHub Actions |
-----
+
 ## 📊 Data Sources
 | Source              | Type          | Frequency                     |
 | ------------------- | ------------- | ------------------------------|                 
@@ -43,7 +43,7 @@ Operational data is scattered across multiple systems:
 | Inventory Snapshots | CSV (S3)      | Generate Daily                |
 | Shipment Logs       | JSON (S3)     | Generate Daily                |
 | Sales Transactions  | PostgreSQL    | Generate Daily                |
-----
+
 ## 🔄 Pipeline Workflow
 Airflow orchestrates:
 - Extract data from all sources
@@ -52,7 +52,7 @@ Airflow orchestrates:
 - Transform data using dbt
 - Run data quality checks
 - Build analytical models
-----
+
 ## 🧱 Data Modeling
 #### Layers:
 - RAW → Unprocessed data
@@ -74,17 +74,17 @@ Airflow orchestrates:
 - Retry mechanisms
 - Failure alerts
 - Partitioned data
-----
+
 ## 🐳 Containerization
 The entire pipeline is containerized using Docker.
-docker build -t supplychain360
+- docker build -t supplychain360
 
 ## ⚙️ CI/CD Pipeline
-GitHub Actions handles:
-Code linting
-Formatting checks
-Docker image build
-Push to container registry
+- GitHub Actions handles:
+- Code linting
+- Formatting checks
+- Docker image build
+- Push to container registry
 
 ## ☁️ Infrastructure (Terraform)
 - S3 buckets
@@ -107,10 +107,10 @@ Push to container registry
 - Suppliers with late deliveries
 - Warehouse inefficiencies
 - Demand trends by region
-----
+
 ## 📊 Architecture Diagram
 
-----
+
 ## 🎯 Outcome
 This platform enables:
 - Real-time decision-making
