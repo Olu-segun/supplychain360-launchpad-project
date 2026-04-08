@@ -25,9 +25,7 @@ with DAG(
     tags=["s3", "postgres", "google_sheet"],
 ) as dag:
     
-    """Create Ingestion Tasks for S3, Postgres, and Google Sheets. 
-     Each task will call the respective ingestion pipeline function 
-    defined in the ingestion_layer modules."""
+    
 
     ingestion_group = create_ingestion_group(dag)
     snowflake_copy = snowflake_copy_tasks(dag)
