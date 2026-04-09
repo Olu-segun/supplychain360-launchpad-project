@@ -1,9 +1,11 @@
-from airflow import DAG
 from datetime import datetime, timedelta
-from tasks.success_mail_alert import dag_success_alert
+
+from tasks.dbt_tasks import run_dbt
 from tasks.ingestion_tasks import create_ingestion_group
 from tasks.snowflake_tasks import snowflake_copy_tasks
-from tasks.dbt_tasks import run_dbt 
+from tasks.success_mail_alert import dag_success_alert
+
+from airflow import DAG
 
 # Create Airflow DAG for SupplyChain360 Data Pipeline with Ingestion Tasks, Snowflake Copy Tasks, and DBT Transformations.
 
@@ -24,13 +26,9 @@ with DAG(
     catchup=False,
     tags=["s3", "postgres", "google_sheet"],
 ) as dag:
-    
-    
 
     ingestion_group = create_ingestion_group(dag)
     snowflake_copy = snowflake_copy_tasks(dag)
     dbt_transform = run_dbt
-    
 
-    
     ingestion_group >> snowflake_copy >> dbt_transform

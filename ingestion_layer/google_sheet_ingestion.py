@@ -1,13 +1,14 @@
-import boto3
 import json
-import pandas as pd
+from datetime import datetime, timezone
 from io import BytesIO
-from datetime import datetime,timezone
-from tenacity import retry, stop_after_attempt, wait_exponential
-from googleapiclient.discovery import build
-from utils.credentials import get_google_service_account_credentials
-from airflow.utils.log.logging_mixin import LoggingMixin
 
+import boto3
+import pandas as pd
+from airflow.utils.log.logging_mixin import LoggingMixin
+from googleapiclient.discovery import build
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+from utils.credentials import get_google_service_account_credentials
 
 # Configuration
 
@@ -31,16 +32,19 @@ s3 = boto3.client("s3")
 
 # Retry Wrapper Logic
 
+
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(min=2, max=10))
 def s3_get_object(bucket, key):
     return s3.get_object(Bucket=bucket, Key=key)
+
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(min=2, max=10))
 def s3_put_object(bucket, key, body):
     return s3.put_object(Bucket=bucket, Key=key, Body=body)
 
 
-# State Management 
+# State Management
+
 
 def load_state():
     try:
@@ -50,11 +54,13 @@ def load_state():
         logger.info("No existing state found. Starting fresh data ingestion.")
         return {"last_processed_date": None}
 
+
 def save_state(state):
     s3_put_object(S3_BUCKET, STATE_FILE_KEY, json.dumps(state))
 
 
-# Google Sheet Data Extraction 
+# Google Sheet Data Extraction
+
 
 def fetch_google_sheet_data(creds):
     logger.info("Fetching data from Google Sheets")
@@ -62,10 +68,9 @@ def fetch_google_sheet_data(creds):
     service = build("sheets", "v4", credentials=creds)
     sheet = service.spreadsheets()
 
-    result = sheet.values().get(
-        spreadsheetId=SPREADSHEET_ID,
-        range=RANGE_NAME
-    ).execute()
+    result = (
+        sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
+    )
 
     values = result.get("values", [])
     if not values:
@@ -76,14 +81,17 @@ def fetch_google_sheet_data(creds):
     return pd.DataFrame(values[1:], columns=values[0])
 
 
-# Transformation and Incremental Load 
+# Transformation and Incremental Load
+
 
 def transform_data(df, last_processed_date):
     if df.empty:
         return df
 
     logger.info("Transforming data")
-    df["store_open_date"] = pd.to_datetime(df["store_open_date"], dayfirst=True, errors="coerce")
+    df["store_open_date"] = pd.to_datetime(
+        df["store_open_date"], dayfirst=True, errors="coerce"
+    )
 
     if last_processed_date:
         last_date = pd.to_datetime(last_processed_date)
@@ -115,6 +123,7 @@ def write_to_s3(df):
 
 # Main Pipeline Function
 
+
 def google_sheet_ingestion_pipeline():
     logger.info("Starting Google Sheets ingestion pipeline")
 
@@ -130,7 +139,7 @@ def google_sheet_ingestion_pipeline():
 
     # Transform (incremental) and add metadata
     df = transform_data(df, last_processed_date)
-    
+
     if not df.empty:
         df["ingestion_timestamp"] = datetime.now(timezone.utc)
 
@@ -144,4 +153,3 @@ def google_sheet_ingestion_pipeline():
         logger.info(f"Updated state: {state}")
 
     logger.info("Pipeline completed successfully")
-

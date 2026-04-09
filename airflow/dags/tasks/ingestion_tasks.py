@@ -7,16 +7,23 @@ Each task will call the respective ingestion pipeline function
 defined in the ingestion_layer modules.
                                         """
 
+
 def run_s3_pipeline():
     from ingestion_layer.s3_ingestion import s3_ingestion_pipeline
+
     s3_ingestion_pipeline()
+
 
 def run_postgres_pipeline():
     from ingestion_layer.postgres_ingestion import postgres_ingestion_pipeline
+
     postgres_ingestion_pipeline()
 
+
 def run_sheet_pipeline():
-    from ingestion_layer.google_sheet_ingestion import google_sheet_ingestion_pipeline
+    from ingestion_layer.google_sheet_ingestion import \
+        google_sheet_ingestion_pipeline
+
     google_sheet_ingestion_pipeline()
 
 

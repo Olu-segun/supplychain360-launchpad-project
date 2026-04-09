@@ -1,5 +1,5 @@
-from airflow.providers.snowflake.operators.snowflake import SQLExecuteQueryOperator
-
+from airflow.providers.snowflake.operators.snowflake import \
+    SQLExecuteQueryOperator
 
 """
 Create Snowflake Copy Tasks for each table to load data from S3 stage to Snowflake raw layer. 
@@ -14,8 +14,9 @@ tables = {
     "sales": "store_sales_transactions/",
     "suppliers": "supplier_registry_data/",
     "inventory": "warehouse_inventory/",
-    "warehouses": "warehouse_master_data/"
+    "warehouses": "warehouse_master_data/",
 }
+
 
 def snowflake_copy_tasks(dag):
     tasks = []
@@ -29,7 +30,7 @@ def snowflake_copy_tasks(dag):
             FILE_FORMAT = (TYPE = PARQUET);
             """,
             conn_id="snowflake_conn",
-            dag=dag
+            dag=dag,
         )
         tasks.append(task)
 

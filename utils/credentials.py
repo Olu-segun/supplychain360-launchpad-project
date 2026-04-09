@@ -1,9 +1,10 @@
-import boto3
-import os
 import json
 import logging
-from sqlalchemy import create_engine
+import os
+
+import boto3
 from google.oauth2.service_account import Credentials
+from sqlalchemy import create_engine
 
 REGION = "eu-west-2"
 
@@ -20,6 +21,7 @@ _ssm_client = None
 _source_s3 = None
 _destination_s3 = None
 _logged_credentials = False
+
 
 def get_boto3_session(region=REGION):
     global _session, _logged_credentials
@@ -50,8 +52,8 @@ def get_boto3_session(region=REGION):
         raise
 
 
+# SSM Client Singleton
 
-# SSM Client Singleton 
 
 def get_ssm_client(region=REGION):
     global _ssm_client
@@ -62,8 +64,8 @@ def get_ssm_client(region=REGION):
     return _ssm_client
 
 
-
 # Source S3 Bucket Credentials From AWS SSM
+
 
 def get_source_s3_client(region=REGION):
     global _source_s3
@@ -73,20 +75,23 @@ def get_source_s3_client(region=REGION):
 
     ssm = get_ssm_client(region)
 
-    access_key = ssm.get_parameter(Name="/source/aws/access_key")["Parameter"]["Value"]
-    secret_key = ssm.get_parameter(Name="/source/aws/secret_key")["Parameter"]["Value"]
+    access_key = ssm.get_parameter(
+        Name="/source/aws/access_key")["Parameter"]["Value"]
+    secret_key = ssm.get_parameter(
+        Name="/source/aws/secret_key")["Parameter"]["Value"]
 
     _source_s3 = boto3.client(
         "s3",
         aws_access_key_id=access_key,
         aws_secret_access_key=secret_key,
-        region_name=region
+        region_name=region,
     )
 
     return _source_s3
 
 
 # Destination S3 Bucket Credentials From AWS SSM
+
 
 def get_destination_s3_client(region=REGION):
     global _destination_s3
@@ -96,41 +101,56 @@ def get_destination_s3_client(region=REGION):
 
     ssm = get_ssm_client(region)
 
-    access_key = ssm.get_parameter(Name="/destination/aws/access_key")["Parameter"]["Value"]
-    secret_key = ssm.get_parameter(Name="/destination/aws/secret_key")["Parameter"]["Value"]
+    access_key = ssm.get_parameter(Name="/destination/aws/access_key")["Parameter"][
+        "Value"
+    ]
+    secret_key = ssm.get_parameter(Name="/destination/aws/secret_key")["Parameter"][
+        "Value"
+    ]
 
     _destination_s3 = boto3.client(
         "s3",
         aws_access_key_id=access_key,
         aws_secret_access_key=secret_key,
-        region_name=region
+        region_name=region,
     )
 
     return _destination_s3
 
 
-
 # Copy Object between S3 Buckets.
+
 
 def copy_object(source_bucket, source_key, dest_bucket, dest_key, region=REGION):
     source_s3 = get_source_s3_client(region)
     destination_s3 = get_destination_s3_client(region)
 
     obj = source_s3.get_object(Bucket=source_bucket, Key=source_key)
-    destination_s3.put_object(Bucket=dest_bucket, Key=dest_key, Body=obj["Body"].read())
-
+    destination_s3.put_object(
+        Bucket=dest_bucket, Key=dest_key, Body=obj["Body"].read())
 
 
 # Postgress Database Credentials From AWS SSM and SQLAlchemy Engine Creation
 
+
 def get_db_engine(region=REGION, connect_args=None):
     ssm = get_ssm_client(region)
 
-    host = ssm.get_parameter(Name="/supplychain360/db/host")["Parameter"]["Value"].strip()
-    port = ssm.get_parameter(Name="/supplychain360/db/port")["Parameter"]["Value"].strip()
-    user = ssm.get_parameter(Name="/supplychain360/db/user")["Parameter"]["Value"].strip()
-    password = ssm.get_parameter(Name="/supplychain360/db/password")["Parameter"]["Value"].strip()
-    database = ssm.get_parameter(Name="/supplychain360/db/dbname")["Parameter"]["Value"].strip()
+    host = ssm.get_parameter(Name="/supplychain360/db/host")["Parameter"][
+        "Value"
+    ].strip()
+    port = ssm.get_parameter(Name="/supplychain360/db/port")["Parameter"][
+        "Value"
+    ].strip()
+    user = ssm.get_parameter(Name="/supplychain360/db/user")["Parameter"][
+        "Value"
+    ].strip()
+    password = ssm.get_parameter(Name="/supplychain360/db/password")["Parameter"][
+        "Value"
+    ].strip()
+    database = ssm.get_parameter(Name="/supplychain360/db/dbname")["Parameter"][
+        "Value"
+    ].strip()
 
     default_connect_args = {
         "connect_timeout": 30,
@@ -152,10 +172,12 @@ def get_db_engine(region=REGION, connect_args=None):
     )
 
 
-
 # Google Credentials From AWS SSM for Google Sheets API Access
 
-def get_google_service_account_credentials(param_name="google_sheet_api", scopes=None, region=REGION):
+
+def get_google_service_account_credentials(
+    param_name="google_sheet_api", scopes=None, region=REGION
+):
     ssm = get_ssm_client(region)
 
     logger.info(f"Fetching Google service account JSON from SSM: {param_name}")

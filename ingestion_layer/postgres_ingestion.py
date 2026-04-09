@@ -1,12 +1,13 @@
 import json
-import pandas as pd
-from io import BytesIO
-from botocore.exceptions import ClientError
 from datetime import datetime, timezone
-from tenacity import retry, stop_after_attempt, wait_exponential
-from utils.credentials import get_db_engine, get_destination_s3_client
-from airflow.utils.log.logging_mixin import LoggingMixin
+from io import BytesIO
 
+import pandas as pd
+from airflow.utils.log.logging_mixin import LoggingMixin
+from botocore.exceptions import ClientError
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+from utils.credentials import get_db_engine, get_destination_s3_client
 
 # Configuration
 
@@ -15,7 +16,7 @@ TARGET_PREFIX = "raw/store_sales_transactions/"
 STATE_FILE_KEY = "metadata/_processed_pg_sales.json"
 
 
-# Logger 
+# Logger
 
 logger = LoggingMixin().log
 
@@ -27,9 +28,11 @@ s3 = get_destination_s3_client()
 
 # Retry Wrapper Logic
 
+
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
 def s3_get_object(bucket, key):
     return s3.get_object(Bucket=bucket, Key=key)
+
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
 def s3_put_object(bucket, key, body):
@@ -37,6 +40,7 @@ def s3_put_object(bucket, key, body):
 
 
 # State Management
+
 
 def load_processed_tables():
     try:
@@ -53,6 +57,7 @@ def load_processed_tables():
     except Exception as e:
         logger.warning(f"Unexpected error loading state: {e}")
         return set()
+
 
 def save_processed_tables(processed):
     try:
@@ -94,8 +99,10 @@ def extract_table_to_s3(table_name, engine):
 
 # Main Pipeline Function
 
+
 def postgres_ingestion_pipeline():
-    logger.info("Start ingesting data from Postgres database to AWS s3 bucket...")
+    logger.info(
+        "Start ingesting data from Postgres database to AWS s3 bucket...")
 
     processed = load_processed_tables()
 
@@ -125,4 +132,3 @@ def postgres_ingestion_pipeline():
 
     save_processed_tables(processed)
     logger.info("Pipeline completed successfully.")
-

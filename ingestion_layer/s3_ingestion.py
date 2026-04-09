@@ -1,16 +1,17 @@
-import json
 import gc
-import pandas as pd
+import json
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timezone
+from io import BytesIO
+
+import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
-from io import BytesIO
-from datetime import datetime, timezone
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from botocore.exceptions import ClientError
-from utils.credentials import get_source_s3_client, get_destination_s3_client
 from airflow.utils.log.logging_mixin import LoggingMixin
+from botocore.exceptions import ClientError
 
+from utils.credentials import get_destination_s3_client, get_source_s3_client
 
 # Configuration
 
@@ -25,7 +26,7 @@ FOLDER_MAPPING = {
     "raw/products/": "raw/product_catalog_master/",
     "raw/shipments/": "raw/shipment_delivery_logs/",
     "raw/suppliers/": "raw/supplier_registry_data/",
-    "raw/warehouses/": "raw/warehouse_master_data/"
+    "raw/warehouses/": "raw/warehouse_master_data/",
 }
 
 STATE_FILE_KEY = "metadata/_processed_files.json"
@@ -44,9 +45,11 @@ destination_s3 = get_destination_s3_client()
 
 # State Management
 
+
 def load_processed_files():
     try:
-        response = destination_s3.get_object(Bucket=TARGET_BUCKET, Key=STATE_FILE_KEY)
+        response = destination_s3.get_object(
+            Bucket=TARGET_BUCKET, Key=STATE_FILE_KEY)
         return set(json.loads(response["Body"].read()))
     except ClientError as e:
         if e.response["Error"]["Code"] == "NoSuchKey":
@@ -54,12 +57,15 @@ def load_processed_files():
             return set()
         raise
 
+
 def save_processed_files(processed_files):
     body = json.dumps(list(processed_files))
-    destination_s3.put_object(Bucket=TARGET_BUCKET, Key=STATE_FILE_KEY, Body=body)
+    destination_s3.put_object(Bucket=TARGET_BUCKET,
+                              Key=STATE_FILE_KEY, Body=body)
 
 
 # List files in S3 with pagination and filter for CSV/JSON
+
 
 def list_files(prefix):
     paginator = source_s3.get_paginator("list_objects_v2")
@@ -74,11 +80,15 @@ def list_files(prefix):
     return files
 
 
-# Memory logging for debugging purposes 
+# Memory logging for debugging purposes
+
 
 def log_memory():
     try:
-        import psutil, os
+        import os
+
+        import psutil
+
         process = psutil.Process(os.getpid())
         mem = process.memory_info().rss / 1024**2
         logger.info(f"Memory usage: {mem:.2f} MB")
@@ -88,18 +98,20 @@ def log_memory():
 
 # Process single file: read, transform, write to S3
 
+
 def process_file(key, target_prefix):
     logger.info(f"[START] Processing {key}")
     response = source_s3.get_object(Bucket=SOURCE_BUCKET, Key=key)
 
     file_name = key.split("/")[-1]
-    file_name = file_name.replace(".csv", ".parquet").replace(".json", ".parquet")
+    file_name = file_name.replace(
+        ".csv", ".parquet").replace(".json", ".parquet")
     target_key = f"{target_prefix}{file_name}"
 
     try:
-        
+
         # Read file into DataFrame based on extension
-        
+
         if key.endswith(".csv"):
             df = pd.read_csv(response["Body"])
         elif key.endswith(".json"):
@@ -107,9 +119,8 @@ def process_file(key, target_prefix):
         else:
             raise ValueError("Unsupported format")
 
-        
         # Add metadata columns for traceability and debugging
-        
+
         df["ingestion_timestamp"] = datetime.now(timezone.utc)
         df["source_file"] = key
 
@@ -122,9 +133,7 @@ def process_file(key, target_prefix):
 
         # Upload to S3 as Parquet file
         destination_s3.put_object(
-            Bucket=TARGET_BUCKET,
-            Key=target_key,
-            Body=buf.getvalue().to_pybytes()
+            Bucket=TARGET_BUCKET, Key=target_key, Body=buf.getvalue().to_pybytes()
         )
 
         logger.info(f"[SUCCESS] Saved → {target_key}")
@@ -171,5 +180,3 @@ def s3_ingestion_pipeline():
 
     save_processed_files(processed_files)
     logger.info("Pipeline completed successfully.")
-    
-    
