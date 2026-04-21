@@ -1,7 +1,6 @@
 import gc
 import json
 import time
-from io import BytesIO
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
