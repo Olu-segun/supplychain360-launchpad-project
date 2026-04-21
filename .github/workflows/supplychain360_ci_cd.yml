@@ -45,7 +45,7 @@ jobs:
                 threads: 4
                 type: snowflake
                 user: ${{ secrets.snowflake_user }}
-                warehouse: supplychain360_wh
+                warehouse: ${{ secrets.snowflake_warehouse }}
               
           EOF
 
