@@ -36,9 +36,9 @@ jobs:
             target: dev
             outputs:
               dev:
-                account: ${{ SNOWFLAKE_ACCOUNT }}
+                account: ${{ secrets.snowflake_account }}
                 database: supplychain360_db
-                password: ${{ SNOWFLAKE_PASSWORD }}
+                password: ${{ secrets.snowflake_password }}
                 role: supplychain360_role
                 schema: staging
                 threads: 4
