@@ -21,6 +21,57 @@ Operational data is scattered across multiple systems:
 - 🗄️ S3 (CSV/JSON files)
 - 🛢️ PostgreSQL transactional database
 - 📊 Google Sheets
+---
+## 📂 Project Folder Structure
+supplychain360/
+│
+├──.github/
+│   └── workflows/
+│       └── supplychain360_ci_cd.yml
+│
+├── terraform/                 
+│   ├── main.tf
+│   ├── variables.tf
+│   └── backend.tf
+│
+├── airflow/
+│   ├── dags/
+│   │   ├── task.py
+│   │   ├── supplychain360_dag.py
+│   │
+│   ├── plugins/
+│   ├── config/
+│   
+│
+├── ingestion_layer/
+│   ├── s3_ingestion.py
+│   ├── postgres_ingestion.py
+│   ├── sheets_ingestion.py
+│
+├── dbt/
+│   ├── models/
+│   │   ├── staging/
+│   │   ├── marts/
+│   ├── seeds/
+│   ├── tests/
+│ 	├──	profiles.yml
+│   └── dbt_project.yml
+│
+├── snowflake_setup_sql/
+│	├── 01_setup_database.sql
+│	├── 02_roles_and_permissions.sql
+│	├──	03_storage_integration.sql
+│	├── 04_stage_and_tables.sql
+│	
+├── utils/
+│   ├──credentials.py
+│
+├── docker-compose.yaml
+├── Dockerfile
+├── requirements.txt
+│
+├── README.md
+└── architecture.png
 ----
 ## ⚙️ Tech Stack
 | Layer            | Tool           |
