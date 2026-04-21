@@ -23,6 +23,12 @@ Operational data is scattered across multiple systems:
 - 📊 Google Sheets
 ---
 ## 📂 Project Folder Structure
+- **Airflow** → Orchestration layer
+- **dbt** → Data transformation layer
+- **Ingestion Layer** → Data extraction (S3, Postgres, Google Sheets)
+- **Snowflake SQL** → Warehouse setup scripts
+- **Terraform** → Infrastructure as Code
+- **GitHub Actions** → CI/CD automation
 ```
 supplychain360/
 │
@@ -71,6 +77,7 @@ supplychain360/
 ├── README.md
 └── architecture.png
 ```
+
 ----
 ## ⚙️ Tech Stack
 | Layer            | Tool           |
