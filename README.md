@@ -24,7 +24,7 @@ Operational data is scattered across multiple systems:
 ---
 ## 📊 Architecture Diagram
 
-<img src="supplychain360-launchpad-project/architecture diagram.jpeg" alt="Architecture Diagram" width="500">
+<img src="architecture.png" alt="Architecture Diagram" width="800">
 
 ---
 ## 📂 Project Folder Structure
