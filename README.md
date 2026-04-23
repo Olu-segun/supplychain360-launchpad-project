@@ -22,6 +22,10 @@ Operational data is scattered across multiple systems:
 - 🛢️ PostgreSQL transactional database
 - 📊 Google Sheets
 ---
+## 📊 Architecture Diagram
+
+<img src="supplychain360-launchpad-project/architecture diagram.jpeg" alt="Architecture Diagram" width="500">
+---
 ## 📂 Project Folder Structure
 - **Airflow** → Orchestration layer
 - **dbt** → Data transformation layer
@@ -174,9 +178,6 @@ GitHub Actions handles:
 - Suppliers with late deliveries
 - Warehouse inefficiencies
 - Demand trends by region
-
-## 📊 Architecture Diagram
-
 
 ## 🎯 Outcome
 This platform enables:

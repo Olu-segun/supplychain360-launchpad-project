@@ -1,8 +1,25 @@
 FROM apache/airflow:3.1.8
 
+USER root
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 USER airflow
 
-COPY requirements.txt /requirements.txt
+WORKDIR /opt/airflow
 
-RUN pip install --no-cache-dir -r /requirements.txt
-    
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy project files
+COPY ingestion_layer/ /opt/airflow/ingestion_layer/
+COPY dbt/ /opt/airflow/dbt/
+COPY airflow/dags/ /opt/airflow/dags/
+COPY utils/ /opt/airflow/utils/
+
+# Fix module import issue
+ENV PYTHONPATH=/opt/airflow
