@@ -7,25 +7,25 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Create dbt target dir with correct ownership before switching user
-RUN mkdir -p /opt/airflow/dbt/target && \
-    chown -R airflow: /opt/airflow/dbt
-
-USER airflow
-
 WORKDIR /opt/airflow
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project files
+COPY requirements.txt .
 COPY ingestion_layer/ /opt/airflow/ingestion_layer/
 COPY dbt/ /opt/airflow/dbt/
 COPY airflow/dags/ /opt/airflow/dags/
 COPY utils/ /opt/airflow/utils/
 
-# Ensure airflow owns everything including dbt/target
-RUN chown -R airflow: /opt/airflow/dbt || true
+
+RUN chown -R airflow:0 /opt/airflow
+
+USER airflow
+
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+
+ENV DBT_TARGET_PATH=/tmp/dbt_target
 
 ENV PYTHONPATH=/opt/airflow
 
