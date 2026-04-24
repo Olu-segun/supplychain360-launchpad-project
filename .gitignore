@@ -23,3 +23,5 @@ logs/
 dbt/package-lock.yml
 dbt/profiles.yml
 .user.yml
+
+echo "dbt/target/" >> .gitignore
