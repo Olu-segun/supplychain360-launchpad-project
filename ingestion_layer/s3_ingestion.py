@@ -174,3 +174,4 @@ def s3_ingestion_pipeline():
 
     save_processed_files(processed_files)
     logger.info("Pipeline completed successfully.")
+    
