@@ -1,14 +1,15 @@
 name: 'supplychain360'
 version: '1.0.0'
+config-version: 2
 
 profile: 'supplychain360'
 
 model-paths: ["supplychain360/models"]
-analysis-paths: ["analyses"]
-test-paths: ["tests"]
-seed-paths: ["seeds"]
-macro-paths: ["macros"]
-snapshot-paths: ["snapshots"]
+analysis-paths: ["supplychain360/analyses"]
+test-paths: ["supplychain360/tests"]
+seed-paths: ["supplychain360/seeds"]
+macro-paths: ["supplychain360/macros"]
+snapshot-paths: ["supplychain360/snapshots"]
 
 clean-targets:        
   - "target"
@@ -18,6 +19,8 @@ clean-targets:
 models:
   supplychain360:
     staging:
+      +schema: staging
       +materialized: table
     marts:
+      +schema: marts
       +materialized: table

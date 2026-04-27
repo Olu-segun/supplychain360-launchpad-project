@@ -52,8 +52,6 @@ def get_boto3_session(region=REGION):
 
 
 # SSM Client Singleton
-
-
 def get_ssm_client(region=REGION):
     global _ssm_client
 
@@ -64,8 +62,6 @@ def get_ssm_client(region=REGION):
 
 
 # Source S3 Bucket Credentials From AWS SSM
-
-
 def get_source_s3_client(region=REGION):
     global _source_s3
 
@@ -127,8 +123,6 @@ def copy_object(source_bucket, source_key, dest_bucket, dest_key, region=REGION)
 
 
 # Postgress Database Credentials From AWS SSM and SQLAlchemy Engine Creation
-
-
 def get_db_engine(region=REGION, connect_args=None):
     ssm = get_ssm_client(region)
 
@@ -169,8 +163,6 @@ def get_db_engine(region=REGION, connect_args=None):
 
 
 # Google Credentials From AWS SSM for Google Sheets API Access
-
-
 def get_google_service_account_credentials(
     param_name="google_sheet_api", scopes=None, region=REGION
 ):
